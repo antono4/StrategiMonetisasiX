@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIER DESK — Toolkit X/Twitter buat cenblue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0e0b;
+    --ink-2:#141813;
+    --panel:#171c15;
+    --line:#2b3327;
+    --line-soft:#212820;
+    --bone:#eae7dc;
+    --bone-dim:#a8a89a;
+    --lime:#c8f24e;
+    --amber:#ffb703;
+    --rust:#e2582c;
+    --mint:#7fd6a6;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,sans-serif;
+    --serif:"Instrument Serif",Georgia,serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.35;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:38px 22px 90px}
+
+  /* ---------- masthead ---------- */
+  header.masthead{
+    border-bottom:1px solid var(--line);
+    padding-bottom:22px;
+    margin-bottom:8px;
+  }
+  .kicker{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--lime);
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .kicker .dim{color:var(--bone-dim)}
+  h1{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(44px,8vw,88px);
+    line-height:.92;
+    margin:14px 0 6px;
+    letter-spacing:-.02em;
+  }
+  h1 em{font-style:italic;color:var(--amber)}
+  .standfirst{
+    max-width:60ch;
+    color:var(--bone-dim);
+    font-size:15px;
+    margin:0;
+  }
+  .standfirst b{color:var(--bone);font-weight:600}
+
+  /* ---------- tabs ---------- */
+  nav.tabs{
+    display:flex;
+    gap:0;
+    margin:26px 0 0;
+    border-bottom:1px solid var(--line);
+    overflow-x:auto;
+  }
+  nav.tabs button{
+    appearance:none;
+    background:none;
+    border:0;
+    border-bottom:3px solid transparent;
+    color:var(--bone-dim);
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:13px 18px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:color .18s ease,border-color .18s ease;
+  }
+  nav.tabs button:hover{color:var(--bone)}
+  nav.tabs button[aria-selected="true"]{color:var(--lime);border-bottom-color:var(--lime)}
+  nav.tabs button .n{color:#57614d;margin-right:8px}
+  nav.tabs button[aria-selected="true"] .n{color:var(--lime)}
+
+  /* ---------- panels ---------- */
+  .panel{display:none;padding-top:34px}
+  .panel.on{display:block}
+  .panel.on > *{animation:rise .5s cubic-bezier(.22,1,.36,1) both}
+  .panel.on > *:nth-child(2){animation-delay:.06s}
+  .panel.on > *:nth-child(3){animation-delay:.12s}
+  .panel.on > *:nth-child(4){animation-delay:.18s}
+  .panel.on > *:nth-child(5){animation-delay:.24s}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:22px;
+    position:relative;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    box-shadow:6px 6px 0 0 rgba(200,242,78,.07);
+  }
+  .card h2{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+    margin:0 0 18px;
+    padding-bottom:10px;
+    border-bottom:1px dashed var(--line);
+  }
+  .card h3{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:24px;
+    margin:0 0 4px;
+  }
+  .card p.lead{color:var(--bone-dim);font-size:14px;margin:0 0 18px}
+
+  /* ---------- inputs ---------- */
+  label.f{
+    display:block;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+    margin-bottom:7px;
+  }
+  input[type=number],input[type=text],select,textarea{
+    width:100%;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    color:var(--bone);
+    font-family:var(--mono);
+    font-size:15px;
+    padding:11px 12px;
+    border-radius:0;
+    outline:none;
+    transition:border-color .16s ease,background .16s ease;
+  }
+  textarea{font-family:var(--sans);resize:vertical;min-height:74px;line-height:1.5}
+  input:focus,select:focus,textarea:focus{border-color:var(--lime);background:#10140f}
+  .field{margin-bottom:16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .hint{font-size:12px;color:var(--bone-dim);margin-top:6px;font-family:var(--mono)}
+
+  /* ---------- tier split ---------- */
+  .bar{
+    display:flex;
+    height:34px;
+    border:1px solid var(--line);
+    margin:4px 0 10px;
+    overflow:hidden;
+  }
+  .bar span{
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink);
+    transition:width .45s cubic-bezier(.22,1,.36,1);
+    overflow:hidden;white-space:nowrap;
+  }
+  .bar .t1{background:var(--lime)}
+  .bar .t2{background:var(--amber)}
+  .bar .t3{background:#5d6a55;color:var(--bone)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--bone-dim)}
+  .legend i{display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:middle}
+  .sw1{background:var(--lime)}.sw2{background:var(--amber)}.sw3{background:#5d6a55}
+
+  /* ---------- output ---------- */
+  .out{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-left:3px solid var(--lime);
+    padding:18px 20px;
+    margin-top:18px;
+  }
+  .big{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:clamp(30px,5vw,44px);
+    letter-spacing:-.02em;
+    color:var(--lime);
+    line-height:1;
+  }
+  .big small{font-size:14px;color:var(--bone-dim);letter-spacing:0;display:block;margin-top:8px;font-weight:400}
+  table.rows{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;margin-top:16px}
+  table.rows th{
+    text-align:left;font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--bone-dim);border-bottom:1px solid var(--line);padding:0 0 8px;
+  }
+  table.rows td{padding:9px 0;border-bottom:1px solid var(--line-soft)}
+  table.rows td:not(:first-child),table.rows th:not(:first-child){text-align:right}
+  .tag{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--line);padding:2px 7px;color:var(--bone-dim);
+  }
+  .note{
+    margin-top:16px;font-size:13px;color:var(--bone-dim);
+    border-left:3px solid var(--amber);padding:10px 14px;background:rgba(255,183,3,.05);
+  }
+  .note b{color:var(--amber)}
+  .note.warn{border-left-color:var(--rust);background:rgba(226,88,44,.06)}
+  .note.warn b{color:var(--rust)}
+
+  /* ---------- checklist ---------- */
+  .progress{
+    display:flex;align-items:center;gap:14px;margin-bottom:20px;
+  }
+  .track{flex:1;height:8px;background:var(--ink-2);border:1px solid var(--line);overflow:hidden}
+  .fill{height:100%;width:0;background:var(--lime);transition:width .35s cubic-bezier(.22,1,.36,1)}
+  .pct{font-family:var(--mono);font-size:13px;color:var(--lime);min-width:52px;text-align:right}
+  ul.check{list-style:none;margin:0;padding:0}
+  ul.check li{border-bottom:1px solid var(--line-soft)}
+  ul.check label{
+    display:flex;gap:13px;align-items:flex-start;
+    padding:13px 4px;cursor:pointer;font-size:15px;
+    transition:background .15s ease;
+  }
+  ul.check label:hover{background:rgba(200,242,78,.04)}
+  ul.check input{
+    appearance:none;width:19px;height:19px;min-width:19px;margin-top:2px;
+    border:1px solid var(--line);background:var(--ink-2);cursor:pointer;position:relative;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  ul.check input:checked{background:var(--lime);border-color:var(--lime)}
+  ul.check input:checked::after{
+    content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  ul.check input:checked ~ span{color:var(--bone-dim);text-decoration:line-through}
+  ul.check .sub{display:block;font-family:var(--mono);font-size:12px;color:var(--bone-dim);margin-top:3px}
+
+  /* ---------- builder ---------- */
+  .drafts{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+  .draft{
+    background:var(--ink-2);border:1px solid var(--line);padding:16px 18px;
+    animation:rise .4s cubic-bezier(.22,1,.36,1) both;
+  }
+  .draft .head{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim);
+    margin-bottom:11px;padding-bottom:9px;border-bottom:1px dashed var(--line);
+  }
+  .draft .body{white-space:pre-wrap;font-size:15px;line-height:1.6}
+  .draft .foot{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;
+  }
+  .count{font-family:var(--mono);font-size:12px;color:var(--bone-dim)}
+  .count.over{color:var(--rust)}
+
+  button.act{
+    appearance:none;cursor:pointer;font-family:var(--mono);font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;
+    background:var(--lime);color:var(--ink);border:1px solid var(--lime);
+    padding:12px 20px;font-weight:600;
+    transition:transform .12s ease,box-shadow .12s ease,background .15s ease;
+  }
+  button.act:hover{box-shadow:4px 4px 0 0 rgba(200,242,78,.25)}
+  button.act:active{transform:translate(2px,2px);box-shadow:none}
+  button.act.ghost{background:none;color:var(--bone);border-color:var(--line)}
+  button.act.ghost:hover{border-color:var(--lime);color:var(--lime);box-shadow:none}
+  button.mini{
+    background:none;border:1px solid var(--line);color:var(--bone-dim);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    padding:6px 11px;cursor:pointer;transition:all .15s ease;
+  }
+  button.mini:hover{border-color:var(--lime);color:var(--lime)}
+  button.mini.ok{border-color:var(--mint);color:var(--mint)}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+
+  footer{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;color:var(--bone-dim);line-height:1.8;
+  }
+  footer b{color:var(--bone)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="kicker">
+      <span>Toolkit X/Twitter &mdash; OCR</span>
+      <span class="dim">v1 &middot; buat cenblue</span>
+    </div>
+    <h1>Tier <em>Desk</em></h1>
+    <p class="standfirst">Views itu angka, <b>asal audiens itu duit</b>. Tiga alat: hitung earning berdasarkan komposisi tier, cek kesiapan akun sebelum gabung OCR, dan rakit caption English dari ide mentah.</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="calc"><span class="n">01</span>Estimator</button>
+    <button role="tab" aria-selected="false" data-tab="check"><span class="n">02</span>Checklist OCR</button>
+    <button role="tab" aria-selected="false" data-tab="build"><span class="n">03</span>Caption Builder</button>
+  </nav>
+
+  <!-- ================= ESTIMATOR ================= -->
+  <section class="panel on" id="calc" role="tabpanel">
+    <div class="cols">
+      <div class="card">
+        <h2>Input &mdash; Jangkauan &amp; Komposisi</h2>
+        <div class="field">
+          <label class="f" for="imp">Total impresi / bulan</label>
+          <input type="number" id="imp" value="2000000" min="0" step="10000">
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="f" for="s1">Porsi Tier 1 (%)</label>
+            <input type="number" id="s1" value="15" min="0" max="100">
+          </div>
+          <div class="field">
+            <label class="f" for="s2">Porsi Tier 2 (%)</label>
+            <input type="number" id="s2" value="15" min="0" max="100">
+          </div>
+        </div>
+        <div class="field">
+          <label class="f" for="s3">Porsi Tier 3 (%)</label>
+          <input type="number" id="s3" value="70" min="0" max="100">
+        </div>
+        <div class="hint">Kalau totalnya bukan 100%, otomatis dinormalisasi.</div>
+
+        <div class="bar" id="bar" aria-hidden="true"></div>
+        <div class="legend">
+          <span><i class="sw1"></i>Tier 1</span>
+          <span><i class="sw2"></i>Tier 2</span>
+          <span><i class="sw3"></i>Tier 3</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Input &mdash; Nilai Trafik</h2>
+        <div class="field">
+          <label class="f" for="rpm3">RPM Tier 3 (USD / 1.000 impresi)</label>
+          <input type="number" id="rpm3" value="0.20" min="0" step="0.01">
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="f" for="ratio">Rasio Tier 1 : Tier 3</label>
+            <input type="number" id="ratio" value="35" min="1" step="1">
+          </div>
+          <div class="field">
+            <label class="f" for="ratio2">Rasio Tier 2 : Tier 3</label>
+            <input type="number" id="ratio2" value="6" min="1" step="1">
+          </div>
+        </div>
+        <div class="note">
+          <b>Catatan:</b> rasio 35x itu estimasi kasar dari materi, bukan angka tetap. RPM asli beda-beda per niche, format iklan, dan musim. Pakai angka RPM akunmu sendiri begitu sudah ada datanya.
+        </div>
+      </div>
+    </div>
+
+    <div class="out">
+      <div class="big" id="earn">$0<small id="earnSub">estimasi earning bulanan</small></div>
+      <table class="rows">
+        <thead>
+          <tr><th>Tier</th><th>Porsi</th><th>Impresi</th><th>RPM</th><th>Earning</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="note" id="uplift"></div>
+    </div>
+  </section>
+
+  <!-- ================= CHECKLIST ================= -->
+  <section class="panel" id="check" role="tabpanel">
+    <div class="card">
+      <h2>Kesiapan Akun Sebelum Gabung OCR</h2>
+      <h3>Fase perintis itu paling berat.</h3>
+      <p class="lead">Centang yang sudah beres. Progresnya kesimpan otomatis di browser ini.</p>
+      <div class="progress">
+        <div class="track"><div class="fill" id="fill"></div></div>
+        <div class="pct" id="pct">0%</div>
+      </div>
+      <ul class="check" id="list"></ul>
+      <div class="actions" style="margin-top:20px">
+        <button class="act ghost" id="resetCheck">Reset checklist</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:22px">
+      <h2>Aturan Repurpose Konten</h2>
+      <table class="rows">
+        <thead><tr><th>Boleh</th><th>Tidak boleh</th></tr></thead>
+        <tbody>
+          <tr><td>Ambil ide / angle</td><td>Upload ulang video orang mentah</td></tr>
+          <tr><td>Bikin aset sendiri</td><td>Re-upload yang masih ada watermark</td></tr>
+          <tr><td>Kutip fakta + sebut sumber</td><td>Klaim karya orang sebagai punya sendiri</td></tr>
+        </tbody>
+      </table>
+      <div class="note warn"><b>Risiko:</b> DMCA berulang bisa berujung akun banned &mdash; earning hilang sekaligus. Nyalin mentah bukan jalan pintas, itu jalan buntu.</div>
+    </div>
+  </section>
+
+  <!-- ================= BUILDER ================= -->
+  <section class="panel" id="build" role="tabpanel">
+    <div class="cols">
+      <div class="card">
+        <h2>Bahan Mentah</h2>
+        <div class="field">
+          <label class="f" for="topic">Topik / ide inti</label>
+          <input type="text" id="topic" placeholder="mis. Fed tahan suku bunga">
+        </div>
+        <div class="field">
+          <label class="f" for="angle">Angle / sudut pandangmu</label>
+          <textarea id="angle" placeholder="mis. kenapa ini bagus buat pemegang obligasi jangka pendek"></textarea>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="f" for="tone">Tone</label>
+            <select id="tone">
+              <option value="hot">Hot take</option>
+              <option value="edu">Edukatif</option>
+              <option value="story">Cerita / pengalaman</option>
+              <option value="list">Listicle</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="f" for="aud">Audiens target</label>
+            <select id="aud">
+              <option value="t1">Tier 1 (US/UK/EU)</option>
+              <option value="mix">Campuran global</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="act" id="gen">Rakit draft</button>
+          <button class="act ghost" id="clear">Bersihkan</button>
+        </div>
+        <div class="note">Draft di bawah cuma kerangka. Tulis ulang dengan gayamu sendiri &mdash; caption hasil copy-paste mentah justru yang bikin konten terasa generik dan gampang ketahuan.</div>
+      </div>
+
+      <div class="card">
+        <h2>Draft Siap Edit</h2>
+        <div class="drafts" id="drafts">
+          <p class="lead" style="margin:0">Isi topik dan angle dulu, lalu klik <b>Rakit draft</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>TIER DESK</b> &mdash; alat bantu hitung dan rakit konten. Semua data disimpan lokal di browser, tidak dikirim ke mana pun.<br>
+    Estimasi earning bersifat indikatif. Syarat program OCR bisa berubah &mdash; selalu cek dashboard resmi.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- tabs ---------------- */
+  var tabs = document.querySelectorAll("nav.tabs button");
+  var panels = document.querySelectorAll(".panel");
+  tabs.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b === btn)); });
+      panels.forEach(function(p){ p.classList.toggle("on", p.id === btn.dataset.tab); });
+    });
+  });
+
+  /* ---------------- estimator ---------------- */
+  var el = {
+    imp: document.getElementById("imp"),
+    s1: document.getElementById("s1"),
+    s2: document.getElementById("s2"),
+    s3: document.getElementById("s3"),
+    rpm3: document.getElementById("rpm3"),
+    ratio: document.getElementById("ratio"),
+    ratio2: document.getElementById("ratio2"),
+    bar: document.getElementById("bar"),
+    tbody: document.getElementById("tbody"),
+    earn: document.getElementById("earn"),
+    earnSub: document.getElementById("earnSub"),
+    uplift: document.getElementById("uplift")
+  };
+
+  var usd = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2});
+  var num = new Intl.NumberFormat("en-US",{maximumFractionDigits:0});
+  var STORE = "tierdesk.estimator.v1";
+
+  function readNum(input, fallback){
+    var v = parseFloat(input.value);
+    return isFinite(v) ? v : fallback;
+  }
+
+  function compute(){
+    var imp = Math.max(0, readNum(el.imp, 0));
+    var raw = [Math.max(0,readNum(el.s1,0)), Math.max(0,readNum(el.s2,0)), Math.max(0,readNum(el.s3,0))];
+    var total = raw[0]+raw[1]+raw[2];
+    var shares = total > 0 ? raw.map(function(x){ return x/total; }) : [0,0,0];
+
+    var rpm3 = Math.max(0, readNum(el.rpm3, 0));
+    var r1 = Math.max(1, readNum(el.ratio, 35));
+    var r2 = Math.max(1, readNum(el.ratio2, 6));
+    var rpms = [rpm3*r1, rpm3*r2, rpm3];
+
+    var earning = 0, rows = "", imps = [];
+    for(var i=0;i<3;i++){
+      var ti = imp*shares[i];
+      var e = ti/1000*rpms[i];
+      imps.push(ti);
+      earning += e;
+      rows += "<tr><td>Tier "+(i+1)+"</td><td>"+(shares[i]*100).toFixed(1)+"%</td><td>"+
+        num.format(Math.round(ti))+"</td><td>"+usd.format(rpms[i])+"</td><td>"+usd.format(e)+"</td></tr>";
+    }
+    el.tbody.innerHTML = rows;
+    el.earn.innerHTML = usd.format(earning) + '<small>estimasi earning bulanan &middot; RPM efektif '+usd.format(imp>0?earning/(imp/1000):0)+'</small>';
+
+    var allT3 = imp/1000*rpm3;
+    var diff = earning - allT3;
+    var pctUp = allT3 > 0 ? (diff/allT3*100) : 0;
+    el.uplift.innerHTML = "Kalau <b>100% impresi dari Tier 3</b>, earning cuma " + usd.format(allT3) +
+      ". Komposisi sekarang bikin selisih <b>" + usd.format(diff) + "</b> (" +
+      (pctUp>=0?"+":"") + pctUp.toFixed(0) + "%)." +
+      (shares[0] < 0.2 ? " Porsi Tier 1 masih di bawah 20% &mdash; ini titik pengungkit terbesar buat digarap." : "");
+
+    var widths = [shares[0]*100, shares[1]*100, shares[2]*100];
+    var cls = ["t1","t2","t3"];
+    var labels = ["T1","T2","T3"];
+    var html = "";
+    for(var j=0;j<3;j++){
+      if(widths[j] <= 0) continue;
+      html += '<span class="'+cls[j]+'" style="width:'+widths[j].toFixed(2)+'%">'+
+        (widths[j] > 7 ? labels[j]+" "+(widths[j]).toFixed(0)+"%" : "")+'</span>';
+    }
+    el.bar.innerHTML = html;
+
+    save();
+  }
+
+  function save(){
+    try{
+      localStorage.setItem(STORE, JSON.stringify({
+        imp:el.imp.value, s1:el.s1.value, s2:el.s2.value, s3:el.s3.value,
+        rpm3:el.rpm3.value, ratio:el.ratio.value, ratio2:el.ratio2.value
+      }));
+    }catch(e){}
+  }
+
+  function restore(){
+    try{
+      var raw = localStorage.getItem(STORE);
+      if(!raw) return;
+      var d = JSON.parse(raw);
+      Object.keys(d).forEach(function(k){ if(el[k]) el[k].value = d[k]; });
+    }catch(e){}
+  }
+
+  [el.imp,el.s1,el.s2,el.s3,el.rpm3,el.ratio,el.ratio2].forEach(function(input){
+    input.addEventListener("input", compute);
+  });
+  restore();
+  compute();
+
+  /* ---------------- checklist ---------------- */
+  var ITEMS = [
+    {id:"age",  t:"Akun aktif minimal 30 hari", s:"Cek durasi minimum di dashboard program, syaratnya bisa berubah"},
+    {id:"prof", t:"Profil lengkap & jelas menyebut niche", s:"Foto, header, bio, nama tampilan, handle konsisten"},
+    {id:"niche",t:"Niche sudah ditentukan dalam satu kalimat", s:"Kalau tidak bisa nulis 20 tweet soal ini tanpa mikir, bukan niche kamu"},
+    {id:"geo",  t:"Target negara Tier 1 sudah dipilih", s:"Tentukan mau bidik US, UK, atau EU &mdash; jangan asal global"},
+    {id:"clean",t:"Tidak ada riwayat pelanggaran kebijakan", s:"Spam, manipulasi engagement, DMCA"},
+    {id:"pay",  t:"Metode payout sudah valid", s:"Isi dan verifikasi sebelum mengajukan"},
+    {id:"ideas",t:"Stok minimal 10 ide konten siap posting", s:"Biar tidak mati ide di minggu pertama"},
+    {id:"sched",t:"Jadwal posting sudah disesuaikan jam Tier 1", s:"Prime time US/EU, bukan jam Indonesia"},
+    {id:"lang", t:"Minimal 80% konten berbahasa English", s:"Konten lokal boleh, jangan jadi mayoritas"},
+    {id:"metr", t:"Sudah punya cara mencatat metrik harian", s:"Impresi, engagement, porsi Tier 1"}
+  ];
+  var CKEY = "tierdesk.checklist.v1";
+  var list = document.getElementById("list");
+  var fill = document.getElementById("fill");
+  var pct  = document.getElementById("pct");
+  var state = {};
+  try{ state = JSON.parse(localStorage.getItem(CKEY) || "{}"); }catch(e){ state = {}; }
+
+  ITEMS.forEach(function(it){
+    var li = document.createElement("li");
+    var lab = document.createElement("label");
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!state[it.id];
+    cb.addEventListener("change", function(){
+      state[it.id] = cb.checked;
+      try{ localStorage.setItem(CKEY, JSON.stringify(state)); }catch(e){}
+      updateProgress();
+    });
+    var span = document.createElement("span");
+    span.innerHTML = it.t + '<span class="sub">'+it.s+'</span>';
+    lab.appendChild(cb); lab.appendChild(span);
+    li.appendChild(lab); list.appendChild(li);
+  });
+
+  function updateProgress(){
+    var done = ITEMS.filter(function(it){ return state[it.id]; }).length;
+    var p = Math.round(done/ITEMS.length*100);
+    fill.style.width = p + "%";
+    pct.textContent = p + "%";
+    pct.style.color = p === 100 ? "var(--mint)" : "var(--lime)";
+  }
+  updateProgress();
+
+  document.getElementById("resetCheck").addEventListener("click", function(){
+    state = {};
+    try{ localStorage.removeItem(CKEY); }catch(e){}
+    list.querySelectorAll("input").forEach(function(cb){ cb.checked = false; });
+    updateProgress();
+  });
+
+  /* ---------------- caption builder ---------------- */
+  var T = {
+    hot: [
+      function(t,a){ return t + ".\n\nEveryone's arguing about the headline. The actual signal is in what changed underneath.\n\n" + a; },
+      function(t,a){ return "Unpopular take on " + t.toLowerCase() + ":\n\n" + a + "\n\nMost people will miss this until it's obvious."; },
+      function(t,a){ return t + " — and almost nobody is pricing this in.\n\n" + a + "\n\nCurious what you think."; }
+    ],
+    edu: [
+      function(t,a){ return "Let me explain " + t.toLowerCase() + " in plain English:\n\n1. What happened\n2. Why it matters\n3. What to watch next\n\nOn point 2: " + a; },
+      function(t,a){ return t + ", explained simply.\n\n" + a + "\n\nSave this if it's useful."; },
+      function(t,a){ return "3 things most people get wrong about " + t.toLowerCase() + ":\n\n1. They read the headline, not the data\n2. " + a + "\n3. They react, instead of positioning\n\nWhich one are you guilty of?"; }
+    ],
+    story: [
+      function(t,a){ return "I got " + t.toLowerCase() + " wrong once.\n\nWhat I learned:\n\n" + a + "\n\nCostly lesson, but a good one."; },
+      function(t,a){ return "A few years ago I'd have ignored " + t.toLowerCase() + " completely.\n\nHere's why I don't anymore:\n\n" + a; },
+      function(t,a){ return "Nobody talks about this part of " + t.toLowerCase() + ".\n\n" + a; }
+    ],
+    list: [
+      function(t,a){ return t + " — 5 things worth knowing:\n\n• " + a + "\n• The boring detail that matters most\n• What the crowd is getting wrong\n• What I'd watch next week\n• The one number to track\n\nBookmark this."; },
+      function(t,a){ return "Quick list on " + t.toLowerCase() + ":\n\n1. " + a + "\n2. Follow the money, not the noise\n3. Position before consensus\n\nThat's it. Simple, not easy."; },
+      function(t,a){ return "If you only read one thing about " + t.toLowerCase() + " today:\n\n" + a + "\n\nEverything else is commentary."; }
+    ]
+  };
+
+  var drafts = document.getElementById("drafts");
+
+  function buildDrafts(){
+    var topic = document.getElementById("topic").value.trim();
+    var angle = document.getElementById("angle").value.trim();
+    var tone  = document.getElementById("tone").value;
+    var aud   = document.getElementById("aud").value;
+
+    if(!topic){
+      drafts.innerHTML = '<p class="lead" style="margin:0;color:var(--rust)">Topik belum diisi.</p>';
+      return;
+    }
+    var ang = angle || "the part everyone is overlooking";
+    var makers = T[tone] || T.hot;
+    var names = ["Hook langsung","Angle balik","Sudut personal"];
+    var out = "";
+    makers.forEach(function(fn, i){
+      var text = fn(topic, ang);
+      var id = "d"+i;
+      out += '<div class="draft" style="animation-delay:'+(i*70)+'ms">'+
+        '<div class="head"><span>Draft '+(i+1)+' &middot; '+names[i]+'</span>'+
+        '<span class="tag">'+(aud==="t1"?"EN / Tier 1":"EN / Global")+'</span></div>'+
+        '<div class="body" id="'+id+'">'+escapeHtml(text)+'</div>'+
+        '<div class="foot"><span class="count" data-for="'+id+'"></span>'+
+        '<button class="mini" data-copy="'+id+'">Copy</button></div></div>';
+    });
+    drafts.innerHTML = out;
+    updateCounts();
+
+    drafts.querySelectorAll("[data-copy]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var node = document.getElementById(b.dataset.copy);
+        var text = node.textContent;
+        var done = function(){
+          b.textContent = "Copied";
+          b.classList.add("ok");
+          setTimeout(function(){ b.textContent="Copy"; b.classList.remove("ok"); }, 1400);
+        };
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+        } else {
+          fallbackCopy(text, done);
+        }
+      });
+    });
+  }
+
+  function fallbackCopy(text, done){
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand("copy"); done(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function updateCounts(){
+    drafts.querySelectorAll(".count").forEach(function(c){
+      var node = document.getElementById(c.dataset.for);
+      if(!node) return;
+      var n = node.textContent.length;
+      c.textContent = n + " / 280";
+      c.classList.toggle("over", n > 280);
+    });
+  }
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, function(ch){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch];
+    });
+  }
+
+  document.getElementById("gen").addEventListener("click", buildDrafts);
+  document.getElementById("clear").addEventListener("click", function(){
+    document.getElementById("topic").value = "";
+    document.getElementById("angle").value = "";
+    drafts.innerHTML = '<p class="lead" style="margin:0">Isi topik dan angle dulu, lalu klik <b>Rakit draft</b>.</p>';
+  });
+})();
+</script>
+</body>
+</html>
